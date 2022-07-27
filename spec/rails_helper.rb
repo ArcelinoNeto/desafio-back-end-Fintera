@@ -1,4 +1,5 @@
 require "simplecov"
+require "shoulda/matchers"
 
 SimpleCov.start "rails" do
   add_filter "app/channels"
