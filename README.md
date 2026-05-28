@@ -1,44 +1,52 @@
-# Desafio Back-end :desktop_computer:
+# Account Registration API
 
-Olá! :wave: Este é o primeiro contato com um pouco da nossa realidade. Nele você vai conhecer alguns dos problemas que resolvemos.
+Account Registration API is a Ruby on Rails backend project focused on account registration, user management and entity access relationships.
 
-## Introdução
+The project was initially developed from a backend technical challenge and later maintained as a portfolio case to demonstrate refactoring, automated testing, domain modeling and API design.
 
-O nosso desafio consiste dos seguintes entregáveis:
+## Project Context
 
-* refatoração do código de criação de conta, que está complexo
-* criação de testes unitários para os trechos de código que estão sem cobertura
-* criação de uma nova funcionalidade
+The original challenge proposed three main goals:
 
-Para entregar o desafio, faça um clone desse repositório, e nos envie por e-mail o link dele.
+* Refactor a complex account creation flow
+* Add automated tests to uncovered parts of the application
+* Implement a new feature to support users associated with multiple entities
 
-Dicas:
+The main business rule evolved from a simple relationship where one account had many users, to a more flexible model where users have a unique registration and can access different entities.
 
-* não pule a leitura desse README, algo muito importante no nosso dia-a-dia é a atenção, ler código, documentação, tarefas, etc. Sair fazendo na maioria das vezes, acaba causando mais problemas, do que soluções. Portanto, pegue um café/bebida de sua preferência e vá com calma :)
-* ficou em dúvida sobre algum ponto? Só nos mandar um e-mail
-* procure quebrar os entregáveis em pequenas tarefas, para evitar uma eventual ["Analysis paralysis"](https://en.wikipedia.org/wiki/Analysis_paralysis)
-* dê uma olhada no nosso [Playbook](https://github.com/Myfc-github/playbook), lá explicamos "nosso jeito" de desenvolver
-* ao entregar o desafio, fique livre para adicionar neste README.md ou criar algum outro markdown para complementar algo sobre o desafio (isso é totalmente opcional)
+## Features
 
-## API
-### Registration
+* Account registration through REST API
+* User registration during account creation
+* Entity-based access relationship
+* Refactored account creation flow
+* Automated test coverage
+* PostgreSQL database
+* Docker support for database setup
+* Code quality analysis with RuboCop
+* Parallel test execution with `parallel_tests`
+
+## API Endpoint
+
+### Create Registration
 
 ```http
 POST /api/v1/registrations
 ```
 
-#### Body
+### Request Body
+
 ```json
-{ 
+{
   "account": {
-    "name": "Teste",
+    "name": "Example Account",
     "from_partner": true,
     "many_partners": true,
     "users": [
       {
         "email": "someone@example.com",
         "first_name": "Example",
-        "last_name": "Fintera User",
+        "last_name": "User",
         "phone": "62999999999"
       }
     ]
@@ -46,92 +54,151 @@ POST /api/v1/registrations
 }
 ```
 
-#### Response
-##### Success
+### Success Response
+
 ```json
 {
   "message": "Registro realizado com sucesso"
 }
 ```
-##### Error
+
+### Error Response
+
 ```json
 {
   "error": "Name can't be blank"
 }
 ```
 
-#### Registration Params
-| Param | Type | Description |
-| :--- | :--- | :--- |
-| name | string(required) | Nome da conta a ser criada |
-| from_partner | boolean | Identifica se a conta é de um parseiro nosso |
-| many_partners | boolean | Identifica se a conta esta vinculada a vários parseiros nossos |
-| users | array(required) | Array de usuários associados à esta conta |
+## Registration Params
 
-#### User Params
-| Param | Type | Description |
-| :--- | :--- | :--- |
-| email | string | E-mail do usuário |
-| first_email | string | Primeiro nome do usuário |
-| last_name | string | Sobrenome do usuário |
-| phone | string | Telefone do usuário |
+| Param         | Type             | Description                                                  |
+| :------------ | :--------------- | :----------------------------------------------------------- |
+| name          | string, required | Account name                                                 |
+| from_partner  | boolean          | Indicates whether the account comes from a partner           |
+| many_partners | boolean          | Indicates whether the account is linked to multiple partners |
+| users         | array, required  | Users associated with the account registration flow          |
 
-## Entregáveis
+## User Params
 
-1. Refatoração do código de criação de conta. De acordo com o seu conhecimento, avalie o código e realize uma refatoração com o objetivo de diminuir a complexidade atual
-2. Deixamos alguns trechos do código sem cobertura, cabe a você descobrir quais pontos são e adicionar os novos testes
-3. Criação de uma nova funcionalidade:
+| Param      | Type   | Description       |
+| :--------- | :----- | :---------------- |
+| email      | string | User email        |
+| first_name | string | User first name   |
+| last_name  | string | User last name    |
+| phone      | string | User phone number |
 
-    - Hoje a criação de uma conta, também inclui o cadastros dos usuários, desta forma UMA conta pode ter N usuários, e UM usuário pertence a UMA conta. Porém um novo requisito chegou: alguns dos nossos clientes têm mais de uma empresa, e precisam que os seus usuários possam acessar diferentes empresas. Portanto, precisamos ter um cadastro único de usuários, e que esses usuários estejam relacionados as empresas (chamadas de `entities`), e não mais a conta em si (diagrama de como é esperado ficar está abaixo).
-    - O corpo do endpoint de registro precisará ser alterado para suportar esta funcionalidade.
-    - Lembre-se de ajustar os testes para cobrir a nova funcionalidade
+## Business Rule Evolution
 
-![Diagrama do banco](docs/assets/diagram.png)
+Initially, the account creation flow also created users directly linked to an account.
 
-## Entregável extra
+The new requirement introduced a more flexible structure:
 
-Deixamos na aplicação vários pontos que podem ser refatorados, se identificar e quiser arrumar, conta como um bônus. Na próxima entrevista, também iremos abordar esse ponto, portanto se quiser apenas comentar sobre eles, tudo bem.
+* Users should have a unique registration
+* Users should be related to entities
+* An account can have multiple entities
+* A user can access different entities
+
+This change required improvements in data modeling, service organization, validations and automated test coverage.
+
+## Tech Stack
+
+* Ruby 3.0.3
+* Ruby on Rails
+* PostgreSQL
+* Docker
+* Docker Compose
+* RSpec
+* Parallel Tests
+* SimpleCov
+* RuboCop
+* Foreman
 
 ## Setup
 
-Você precisa:
- * docker
- * docker-compose
- * ruby 3.0.3
+### Requirements
 
-Para iniciar o container do PostgreSQL, basta rodar na raíz do projeto: `docker-compose up`
+* Docker
+* Docker Compose
+* Ruby 3.0.3
 
-> Se enfrentar dificuldade com o docker, suba um banco PostgreSQL localmente e ajuste as configurações de conexão.
+Start the PostgreSQL container:
 
-Crie um arquivo `.env` e atualize as variáveis que precisam ser definidas: `cp .env.example .env`
+```bash
+docker-compose up
+```
 
-Execute o bundle para instalar as dependências do projeto.
+Create the environment file:
 
-Inicialize a base de dados com:
-```rails db:setup```
+```bash
+cp .env.example .env
+```
 
-Já para iniciar a aplicação: `foreman start`
+Install dependencies:
 
-## Testes
+```bash
+bundle install
+```
 
-O desafio back-end permite execução da suite de testes em paralelo, através da gem `parallel_tests`, para melhor performance. Para executar a suite de testes:
+Set up the database:
 
-1. Prepare o banco de dados de teste
+```bash
+rails db:setup
+```
 
-        rails db:test:prepare
+Start the application:
 
-2. Gere os bancos de dados de teste a serem utilizados para cada processo em paralelo (o comando gera X banco de dados, onde X é de acordo com o número de CPUs do seu computador):
+```bash
+foreman start
+```
 
-        rails parallel:create
+## Running Tests
 
-3. Execute os testes (o comando abaixo dispara as suites de testes em paralelo usando 4 processos):
+Prepare the test database:
 
-        COVERAGE=true parallel_rspec spec -n 4
+```bash
+rails db:test:prepare
+```
 
-4. Verifique o resultado dos testes no arquivo
+Create parallel test databases:
 
-        ./coverage/index.html
+```bash
+rails parallel:create
+```
 
-## Rubocop
+Run the test suite:
 
-Para rodar o rubocop, rode: `rubocop --parallel`
+```bash
+COVERAGE=true parallel_rspec spec -n 4
+```
+
+Check the coverage report:
+
+```text
+./coverage/index.html
+```
+
+## Code Quality
+
+Run RuboCop:
+
+```bash
+rubocop --parallel
+```
+
+## Project Goals
+
+This project demonstrates:
+
+* Refactoring of complex business flows
+* Service-oriented organization
+* API design with Ruby on Rails
+* Automated testing with RSpec
+* Database relationship modeling
+* Handling evolving business requirements
+* Code quality practices with RuboCop
+* Test performance optimization with parallel execution
+
+## Portfolio Notes
+
+Although this project started as a technical challenge, it was kept as a backend case study because it represents common real-world scenarios: refactoring legacy-like flows, improving test coverage and adapting the domain model to new business requirements.
